@@ -37,8 +37,6 @@ jobs:
 
       - name: Build
         working-directory: galactic-giant
-        env:
-          ASTRO_BASE: /
         run: npm run build
 
       - name: Upload artifact
