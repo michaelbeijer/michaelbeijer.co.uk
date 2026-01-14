@@ -1,0 +1,18 @@
+---
+import Page from '../layouts/Page.astro';
+import { PROZ_FEEDBACK_URL, SITE_SEO_TITLE } from '../consts';
+---
+
+<Page title={`Testimonials | ${SITE_SEO_TITLE}`}>
+	<h1>Testimonials</h1>
+	<p>
+		For an authoritative, up-to-date set of client feedback, see my ProZ feedback card.
+	</p>
+	<p>
+		<a href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">View ProZ feedback</a>
+	</p>
+	<hr />
+	<p>
+		Selected quotes will be curated here (manually) over time.
+	</p>
+</Page>

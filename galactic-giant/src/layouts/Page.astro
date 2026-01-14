@@ -1,0 +1,37 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_SEO_TITLE } from '../consts';
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const { title = SITE_SEO_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+---
+
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} />
+		<style>
+			.prose {
+				width: 760px;
+				max-width: calc(100% - 2em);
+				margin: 0 auto;
+				padding: 3.25em 1em;
+			}
+			.prose h1 {
+				margin-top: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main class="prose">
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>

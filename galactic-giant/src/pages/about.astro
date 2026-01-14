@@ -1,0 +1,24 @@
+---
+import Page from '../layouts/Page.astro';
+import { CONTACT_EMAIL, CONTACT_PHONE, LINKEDIN_URL, SITE_DESCRIPTION, SITE_SEO_TITLE } from '../consts';
+---
+
+<Page title={`About | ${SITE_SEO_TITLE}`} description={SITE_DESCRIPTION}>
+	<h1>About</h1>
+	<p>
+		I’m Michael Beijer, a Dutch↔English patent and technical translator and terminologist based in Hastings, UK.
+		I work with translators, agencies, and direct clients on translation, editing, terminology, and workflow.
+	</p>
+	<p>
+		I’m particularly focused on clear, consistent technical language: controlled terminology, style alignment,
+		and quality checks that reduce rework downstream.
+	</p>
+	<hr />
+	<p>
+		Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+		<br />
+		Phone: <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`}>{CONTACT_PHONE}</a>
+		<br />
+		LinkedIn: <a href={LINKEDIN_URL} target="_blank" rel="noopener">{LINKEDIN_URL}</a>
+	</p>
+</Page>

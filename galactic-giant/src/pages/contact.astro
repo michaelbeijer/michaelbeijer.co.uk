@@ -1,0 +1,23 @@
+---
+import Page from '../layouts/Page.astro';
+import { CONTACT_EMAIL, CONTACT_PHONE, SITE_SEO_TITLE } from '../consts';
+---
+
+<Page title={`Contact | ${SITE_SEO_TITLE}`}>
+	<h1>Contact</h1>
+	<p>
+		Email is the fastest way to reach me.
+	</p>
+	<ul>
+		<li>Email: <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></li>
+		<li>Phone: <a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`}>{CONTACT_PHONE}</a></li>
+	</ul>
+	<h2>For a quick quote</h2>
+	<ul>
+		<li>Word count (or file(s) attached)</li>
+		<li>Deadline</li>
+		<li>Domain / subject matter</li>
+		<li>Source format (Word, PDF, XLIFF, etc.)</li>
+		<li>Any terminology or style guide</li>
+	</ul>
+</Page>
