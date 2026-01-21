@@ -8,18 +8,31 @@ I created [tranzlashion.com](https://tranzlashion.com) as a parody of the cheap,
 
 You know the type: flashy websites promising "lightning speed" translations at rock-bottom prices, vague claims about "quality", stock photos of people pointing at keyboards, and a suspicious overuse of the  symbol.
 
+![Tranzlashion homepage](https://tranzlashion.com/img/tranzlashion-com.png)
+
 ## The Tranzlashion Concept
 
 *"Tranzlashion is the mindset you enter into when you realize that quality can be as fast as you need it."*
 
-At first glance, it might look like the website of a regular translation agency. Look again, however, and you will see that we aren't just any agency  **we are Tranzlashion!**
+At its core, Tranzlashion is more than a serviceit's a *philosophy*. We believe that words don't just need to be translated; they need to be **transformed**. Where others see a simple swap of text, we see an opportunity to breathe life into your content, delivering translations so seamless you'd swear they were born in the target language.
+
+Whereas most translation agencies subscribe to ancient beliefs and utilize prehistoric technology, at Tranzlashion, we do things a little differently.
+
+## Speed and Precision
+
+Traditional translation agencies cling to outdated notions like "accuracy takes time." At Tranzlashion, we scoff at such limitations. Our proprietary tools and techniques (patent pending) ensure your projects are not only lightning-fast but also terrifyingly accurate. Don't believe us? Try us. We dare you.
+
+## Our Secret Sauce
+
+How do we achieve such legendary results? By blending state-of-the-art AI, the psychic intuition of our translators, and just a touch of black magic (don't ask questions).
 
 The site features all the hallmarks of a questionable LSP:
 
 - **Meaningless slogans**  "Because every single language deserves to be translated immediately!"
 - **Impossible promises**  Get a free quote in "light speed"!
-- **Vague service descriptions**  We will "take you by the hand and guide you to grow your language needs into the future!"
+- **Vague buzzwords**  We will "take you by the hand and guide you to grow your language needs into the future!"
 - **The customer is always right**  "We will assure you and/or your multiple clients and customers who is the boss of quality. Yes, that's right: **you are**."
+- **Proprietary magic**  "patent pending" tools and "psychic intuition"
 
 ## Why I made it
 
