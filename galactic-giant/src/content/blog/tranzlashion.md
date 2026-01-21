@@ -8,7 +8,7 @@ I created [tranzlashion.com](https://tranzlashion.com) as a parody of the cheap,
 
 You know the type: flashy websites promising "lightning speed" translations at rock-bottom prices, vague claims about "quality", stock photos of people pointing at keyboards, and a suspicious overuse of the  symbol.
 
-![Tranzlashion homepage](https://tranzlashion.com/img/tranzlashion-com.png)
+![Tranzlashion homepage](../../assets/tranzlashion.png)
 
 ## The Tranzlashion Concept
 
