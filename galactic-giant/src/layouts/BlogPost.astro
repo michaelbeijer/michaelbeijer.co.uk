@@ -1,11 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
+import BackToTop from '../components/BackToTop.astro';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-import { SITE_SEO_TITLE } from '../consts';
 
 type Props = CollectionEntry<'blog'>['data'];
 
@@ -14,7 +14,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 
 <html lang="en">
 	<head>
-		<BaseHead title={`${title} | ${SITE_SEO_TITLE}`} description={description} />
+		<BaseHead title={title} description={description} />
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -31,11 +31,11 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				box-shadow: var(--box-shadow);
 			}
 			.prose {
-				width: 760px;
+				width: 720px;
 				max-width: calc(100% - 2em);
 				margin: auto;
 				padding: 1em;
-				color: rgb(var(--text));
+				color: rgb(var(--gray-dark));
 			}
 			.title {
 				margin-bottom: 1em;
@@ -48,7 +48,7 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			}
 			.date {
 				margin-bottom: 0.5em;
-				color: rgb(var(--muted));
+				color: rgb(var(--gray));
 			}
 			.last-updated-on {
 				font-style: italic;
@@ -83,5 +83,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			</article>
 		</main>
 		<Footer />
+		<BackToTop />
 	</body>
 </html>

@@ -1,4 +1,5 @@
 ---
+import BackToTop from '../components/BackToTop.astro';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
@@ -21,9 +22,7 @@ import {
 		<Header />
 		<main>
 			<h1>Michael Beijer</h1>
-			<p class="lead">
-				Dutch↔English patent &amp; technical translator and terminologist based in Hastings, United Kingdom.
-			</p>
+			<p class="lead">Dutch↔English patent &amp; technical translator and terminologist based in Hastings, United Kingdom.</p>
 			<p>
 				I help teams ship precise technical writing across languages—especially in patents, engineering,
 				and software. My workflow is CAT-tool compatible, confidentiality-first, and quality-assured.
@@ -49,12 +48,8 @@ import {
 			<section>
 				<h2>Side projects</h2>
 				<ul class="clean">
-					<li>
-						<a href={SUPERVERTALER_URL} target="_blank" rel="noopener">Supervertaler</a> — desktop translation companion for CAT workflows.
-					</li>
-					<li>
-						<a href={BEIJERTERM_URL} target="_blank" rel="noopener">Beijerterm</a> — open multilingual terminology database.
-					</li>
+					<li><a href={SUPERVERTALER_URL} target="_blank" rel="noopener">Supervertaler</a> — desktop translation companion for CAT workflows.</li>
+					<li><a href={BEIJERTERM_URL} target="_blank" rel="noopener">Beijerterm</a> — open multilingual terminology database.</li>
 				</ul>
 			</section>
 			<section>
@@ -66,6 +61,7 @@ import {
 			</section>
 		</main>
 		<Footer />
+		<BackToTop />
 	</body>
 </html>
 
