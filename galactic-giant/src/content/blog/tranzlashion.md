@@ -6,7 +6,7 @@ pubDate: 2024-06-01
 
 I created [tranzlashion.com](https://tranzlashion.com) as a parody of the cheap, dodgy translation agencies that seem to pop up everywhere online.
 
-You know the type: flashy websites promising "lightning speed" translations at rock-bottom prices, vague claims about "quality", stock photos of people pointing at keyboards, and a suspicious overuse of the  symbol.
+You know the type: flashy websites promising "lightning speed" translations at rock-bottom prices, vague claims about "quality", stock photos of people pointing at keyboards, and a suspicious overuse of the ® symbol.
 
 ![Tranzlashion homepage](../../assets/tranzlashion.png)
 
