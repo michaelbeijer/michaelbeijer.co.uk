@@ -1,10 +1,10 @@
 // Place any global data in this file.
 // You can import this data from anywhere in your site by using the `import` keyword.
 
-export const SITE_TITLE = 'Michael Beijer';
-export const SITE_SEO_TITLE = 'Michael Beijer — Dutch↔English patent & technical translator';
+export const SITE_TITLE = 'beijer·uk';
+export const SITE_SEO_TITLE = 'beijer·uk — Dutch↔English patent & technical translator';
 export const SITE_DESCRIPTION =
-	'Dutch↔English patent & technical translator and terminologist based in Hastings, UK.';
+'Dutch↔English patent & technical translator and terminologist based in Hastings, UK.';
 
 export const CONTACT_EMAIL = 'info@michaelbeijer.co.uk';
 export const CONTACT_PHONE = '+44 7475 771720';
