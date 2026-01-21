@@ -1,4 +1,4 @@
----
+﻿---
 import {
 	BEIJERTERM_URL,
 	CONTACT_EMAIL,
@@ -9,21 +9,22 @@ import {
 } from '../consts';
 
 const today = new Date();
+const base = import.meta.env.BASE_URL;
 ---
 
 <footer>
 	<div class="grid">
 		<div class="meta">
 			<div class="name">Michael Beijer</div>
-			<div class="tagline">Dutch↔English patent &amp; technical translator · Hastings, UK</div>
+			<div class="tagline">Dutchâ†”English patent &amp; technical translator Â· Hastings, UK</div>
 			<div class="contact">
 				<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-				<span class="sep">·</span>
+				<span class="sep">Â·</span>
 				<a href={`tel:${CONTACT_PHONE.replace(/\s/g, '')}`}>{CONTACT_PHONE}</a>
 			</div>
 		</div>
 		<div class="links">
-			<a href={`/about`}>About</a>
+			<a href={`${base}about`}>About</a>
 			<a href={LINKEDIN_URL} target="_blank" rel="noopener">LinkedIn</a>
 			<a href={PROZ_FEEDBACK_URL} target="_blank" rel="noopener">ProZ feedback</a>
 			<a href={SUPERVERTALER_URL} target="_blank" rel="noopener">Supervertaler</a>
@@ -81,3 +82,4 @@ const today = new Date();
 		text-align: left;
 	}
 </style>
+
