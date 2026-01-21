@@ -1,5 +1,5 @@
 ---
-title: "tranzlashion.com  my spoof translation company website"
+title: "tranzlashion.com - my spoof translation company website"
 description: "A satirical take on the cheap, questionable translation agencies that seem to pop up everywhere. Because every single language deserves to be translated immediately!"
 pubDate: 2024-06-01
 ---
