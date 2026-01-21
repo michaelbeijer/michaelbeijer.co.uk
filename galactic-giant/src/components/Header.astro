@@ -1,165 +1,166 @@
 ---
 import { SITE_TITLE } from '../consts';
 import HeaderLink from './HeaderLink.astro';
+const base = import.meta.env.BASE_URL;
 ---
 
 <header>
-	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
-			<span class="hamburger-line"></span>
-			<span class="hamburger-line"></span>
-			<span class="hamburger-line"></span>
-		</button>
-		<div class="internal-links">
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="/patents">Patents</HeaderLink>
-			<HeaderLink href="/services">Services</HeaderLink>
-			<HeaderLink href="/work">Work</HeaderLink>
-			<HeaderLink href="/testimonials">Testimonials</HeaderLink>
-			<HeaderLink href="/tools">Tools</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-			<HeaderLink href="/contact">Contact</HeaderLink>
-		</div>
-	</nav>
+<nav>
+<h2><a href={base}>{SITE_TITLE}</a></h2>
+<button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+<span class="hamburger-line"></span>
+<span class="hamburger-line"></span>
+<span class="hamburger-line"></span>
+</button>
+<div class="internal-links">
+<HeaderLink href={base}>Home</HeaderLink>
+<HeaderLink href={base + 'patents'}>Patents</HeaderLink>
+<HeaderLink href={base + 'services'}>Services</HeaderLink>
+<HeaderLink href={base + 'work'}>Work</HeaderLink>
+<HeaderLink href={base + 'testimonials'}>Testimonials</HeaderLink>
+<HeaderLink href={base + 'tools'}>Tools</HeaderLink>
+<HeaderLink href={base + 'blog'}>Blog</HeaderLink>
+<HeaderLink href={base + 'contact'}>Contact</HeaderLink>
+</div>
+</nav>
 </header>
 
 <script>
-	const hamburger = document.querySelector('.hamburger');
-	const navLinks = document.querySelector('.internal-links');
-	
-	hamburger?.addEventListener('click', () => {
-		const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
-		hamburger.setAttribute('aria-expanded', (!isExpanded).toString());
-		hamburger.classList.toggle('active');
-		navLinks?.classList.toggle('active');
-	});
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.internal-links');
 
-	// Close menu when clicking a link
-	navLinks?.querySelectorAll('a').forEach(link => {
-		link.addEventListener('click', () => {
-			hamburger?.classList.remove('active');
-			hamburger?.setAttribute('aria-expanded', 'false');
-			navLinks.classList.remove('active');
-		});
-	});
+hamburger?.addEventListener('click', () => {
+const isExpanded = hamburger.getAttribute('aria-expanded') === 'true';
+hamburger.setAttribute('aria-expanded', (!isExpanded).toString());
+hamburger.classList.toggle('active');
+navLinks?.classList.toggle('active');
+});
+
+// Close menu when clicking a link
+navLinks?.querySelectorAll('a').forEach(link => {
+link.addEventListener('click', () => {
+hamburger?.classList.remove('active');
+hamburger?.setAttribute('aria-expanded', 'false');
+navLinks.classList.remove('active');
+});
+});
 </script>
 
 <style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		background: rgb(var(--bg));
-		border-bottom: 1px solid rgb(var(--border));
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
-	}
+header {
+margin: 0;
+padding: 0 1em;
+background: rgb(var(--bg));
+border-bottom: 1px solid rgb(var(--border));
+}
+h2 {
+margin: 0;
+font-size: 1em;
+}
 
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
-	}
-	nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1em;
-	}
-	.internal-links {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: flex-end;
-		gap: 0.25em 0.75em;
-		padding: 0.25em 0;
-	}
-	nav a {
-		padding: 0.9em 0;
-		color: rgb(var(--text));
-		border-bottom: 2px solid transparent;
-		text-decoration: none;
-	}
-	nav a.active {
-		border-bottom-color: rgb(var(--text));
-	}
+h2 a,
+h2 a.active {
+text-decoration: none;
+}
+nav {
+display: flex;
+align-items: center;
+justify-content: space-between;
+gap: 1em;
+}
+.internal-links {
+display: flex;
+flex-wrap: wrap;
+justify-content: flex-end;
+gap: 0.25em 0.75em;
+padding: 0.25em 0;
+}
+nav a {
+padding: 0.9em 0;
+color: rgb(var(--text));
+border-bottom: 2px solid transparent;
+text-decoration: none;
+}
+nav a.active {
+border-bottom-color: rgb(var(--text));
+}
 
-	/* Hamburger button - hidden on desktop */
-	.hamburger {
-		display: none;
-		flex-direction: column;
-		justify-content: center;
-		gap: 5px;
-		width: 32px;
-		height: 32px;
-		background: transparent;
-		border: none;
-		cursor: pointer;
-		padding: 4px;
-		z-index: 1001;
-	}
-	.hamburger-line {
-		display: block;
-		width: 100%;
-		height: 2px;
-		background: rgb(var(--text));
-		border-radius: 2px;
-		transition: transform 0.3s ease, opacity 0.3s ease;
-	}
-	.hamburger.active .hamburger-line:nth-child(1) {
-		transform: translateY(7px) rotate(45deg);
-	}
-	.hamburger.active .hamburger-line:nth-child(2) {
-		opacity: 0;
-	}
-	.hamburger.active .hamburger-line:nth-child(3) {
-		transform: translateY(-7px) rotate(-45deg);
-	}
+/* Hamburger button - hidden on desktop */
+.hamburger {
+display: none;
+flex-direction: column;
+justify-content: center;
+gap: 5px;
+width: 32px;
+height: 32px;
+background: transparent;
+border: none;
+cursor: pointer;
+padding: 4px;
+z-index: 1001;
+}
+.hamburger-line {
+display: block;
+width: 100%;
+height: 2px;
+background: rgb(var(--text));
+border-radius: 2px;
+transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.hamburger.active .hamburger-line:nth-child(1) {
+transform: translateY(7px) rotate(45deg);
+}
+.hamburger.active .hamburger-line:nth-child(2) {
+opacity: 0;
+}
+.hamburger.active .hamburger-line:nth-child(3) {
+transform: translateY(-7px) rotate(-45deg);
+}
 
-	/* Mobile styles */
-	@media (max-width: 720px) {
-		nav {
-			position: relative;
-		}
-		.hamburger {
-			display: flex;
-		}
-		.internal-links {
-			position: fixed;
-			top: 0;
-			right: -100%;
-			width: 280px;
-			max-width: 80vw;
-			height: 100vh;
-			background: rgb(var(--bg));
-			flex-direction: column;
-			justify-content: flex-start;
-			align-items: flex-start;
-			padding: 5em 2em 2em;
-			gap: 0;
-			box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-			transition: right 0.3s ease;
-			z-index: 1000;
-			overflow-y: auto;
-		}
-		.internal-links.active {
-			right: 0;
-		}
-		.internal-links a {
-			width: 100%;
-			padding: 0.75em 0;
-			border-bottom: 1px solid rgb(var(--border));
-			font-size: 1.1em;
-		}
-		.internal-links a:last-child {
-			border-bottom: none;
-		}
-		.internal-links a.active {
-			border-bottom: 1px solid rgb(var(--border));
-			font-weight: 700;
-		}
-		.internal-links a:last-child.active {
-			border-bottom: none;
-		}
-	}
+/* Mobile styles */
+@media (max-width: 720px) {
+nav {
+position: relative;
+}
+.hamburger {
+display: flex;
+}
+.internal-links {
+position: fixed;
+top: 0;
+right: -100%;
+width: 280px;
+max-width: 80vw;
+height: 100vh;
+background: rgb(var(--bg));
+flex-direction: column;
+justify-content: flex-start;
+align-items: flex-start;
+padding: 5em 2em 2em;
+gap: 0;
+box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+transition: right 0.3s ease;
+z-index: 1000;
+overflow-y: auto;
+}
+.internal-links.active {
+right: 0;
+}
+.internal-links a {
+width: 100%;
+padding: 0.75em 0;
+border-bottom: 1px solid rgb(var(--border));
+font-size: 1.1em;
+}
+.internal-links a:last-child {
+border-bottom: none;
+}
+.internal-links a.active {
+border-bottom: 1px solid rgb(var(--border));
+font-weight: 700;
+}
+.internal-links a:last-child.active {
+border-bottom: none;
+}
+}
 </style>
