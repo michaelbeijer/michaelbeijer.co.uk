@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-01-21
+
+### Added
+- Hamburger menu for mobile navigation with slide-in panel
+- Blog posts now grouped by year (2025, 2024, 2013)
+- Bullet points for blog post listings
+- New blog post: Termania interview (2013)
+- New blog post: tranzlashion.com spoof translation company (2024)
+
+### Changed
+- Site title changed to michaelbeijer.co.uk
+- Blog renamed to "Beijerblog" in navigation and page title
+- Reduced heading sizes for better visual balance (h1: 2.5em, h2: 1.75em, h3: 1.4em)
+- Removed featured/hero styling from first blog post
+- Blog layout changed from grid to simple year-grouped list
+
+### Fixed
+- Mobile navigation now collapses into hamburger menu below 720px
+
 ## [1.0.0] - 2026-01-21
 
 ### Added
@@ -16,13 +35,8 @@ All notable changes to this project will be documented in this file.
 - Contact page with email and phone details
 - About page with 30+ years experience, 25M+ words translated
 - Back-to-top button on all pages
-- Hamburger menu for mobile navigation
 - RSS feed for blog posts
 - Sitemap for SEO
-
-### Changed
-- Reduced heading sizes (h1: 2.5em, h2: 1.75em, h3: 1.4em) for better visual balance
-- Site title updated to michaelbeijer.co.uk
 
 ### Fixed
 - Base URL configuration for GitHub Pages deployment
