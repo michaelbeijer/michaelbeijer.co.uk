@@ -13,7 +13,7 @@ That has just changed for me, and I want to describe the new setup, because it's
 
 The [Supervertaler MCP Server](https://docs.supervertaler.com/trados/mcp-server/) connects Claude for Desktop to [Supervertaler for Trados](https://supervertaler.com/trados/), my plug-in for Trados Studio 2024/2026. Once the connection is made, Claude has full access to my open Trados project: the segments in the grid, my termbases, my translation memories, and even Trados Studio comments. It can read them – and it can change them.
 
-MCP (Model Context Protocol) is the open standard that makes this possible: it's the plumbing that lets an AI assistant like Claude talk to other software on your computer. In this case, that other software is Trados Studio.
+MCP (Model Context Protocol) is the open standard that makes this possible: it's the plumbing that lets an AI assistant like Claude talk to other software on your computer. In this case, that other software is Trados Studio. And because it's an open standard, Claude for Desktop is only one possible client: the same server lets me chat with my Trados project from Claude Code in VS Code or in a terminal – wherever I happen to be working.
 
 There are no commands to memorise – you just ask, in plain language. If you're ever unsure what's possible, you can literally ask Claude "What can I do?":
 
