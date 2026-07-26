@@ -15,6 +15,20 @@ The [Supervertaler MCP Server](https://docs.supervertaler.com/trados/mcp-server/
 
 MCP (Model Context Protocol) is the open standard that makes this possible: it's the plumbing that lets an AI assistant like Claude talk to other software on your computer. In this case, that other software is Trados Studio.
 
+## Standing on Trados Studio's shoulders
+
+It's worth pausing on how this is even possible, because it says something about Trados Studio that I think often goes unappreciated: Studio has a genuinely deep extensibility story. It isn't just a CAT tool; it's a platform, with a .NET plug-in framework and a set of public APIs that give third-party developers access to almost everything Studio itself can do.
+
+Supervertaler for Trados is built on those APIs:
+
+- The **Integration API** lets a plug-in add its own views, panels and ribbon actions, and gives access to the editor – the active document, the active segment, navigation, and so on.
+- The **Bilingual File API** exposes the actual content of the files: segment pairs, source and target text, confirmation statuses, and even Trados Studio comments.
+- The **Project Automation API** lets a plug-in run Studio's own batch tasks programmatically – analyse files, pre-translate, update main translation memories, verify, generate target translations.
+- The **Translation Memory API** allows searching and updating TMs, and the **terminology provider API** does the same for termbases.
+- And when it's all built, the **RWS AppStore** gives you a distribution channel straight into your users' copies of Studio.
+
+The Supervertaler MCP Server is, in a sense, a thin translation layer on top of all this: a small program that Claude for Desktop talks to, which forwards each request to the plug-in running inside Trados Studio. Every tool Claude can use – "get me the segments", "search the TM", "update this target", "add a comment" – maps down to those same public Trados APIs. The reason I could expose over forty different operations to an AI assistant is simply that Studio's API surface is rich enough to support them. If RWS hadn't invested in that developer platform over the years, none of this would exist.
+
 ## The workflow
 
 After implementing the server, I started using it on real translation jobs. The workflow goes like this:
@@ -63,6 +77,16 @@ And crucially, you remain in charge. Claude proposes, explains and asks; you dec
 One more trick that I love. If Claude is unable to do something – some operation the MCP server doesn't support yet – I simply switch to the Claude Code tab in the Claude for Desktop app and tell Claude Code to implement it. It gets to work on the plug-in's source code, and I switch back to the translation chat tab to carry on translating.
 
 This means I can improve the system iteratively while using it to translate a real project at the same time. The tool grows to fit the work, mid-job.
+
+## Trados Studio 2026: better for developers too
+
+Supervertaler for Trados supports both Studio 2024 and the new [Studio 2026](https://www.trados.com/spotlight/whats-new-studio-2026/), and having ported the plug-in to 2026, I can say the changes under the bonnet are substantial – and very welcome from a developer's point of view.
+
+**64-bit at last.** Studio 2026 is now a fully 64-bit application. For users, that means the old 32-bit memory ceiling is gone: large files and projects open dramatically faster, and RWS reports processing enormous files that previously caused crashes. For developers, it means we're no longer building against a 32-bit process with all the legacy constraints that entailed.
+
+**A modern termbase format.** Local termbases have moved from the legacy .sdltb format to the new **.ttb** format. This one deserves a special mention. The old .sdltb was built on a Microsoft JET database engine dating back decades, which could only be read through 32-bit drivers – supporting it in a plug-in involved some genuinely archaeological work. The new .ttb format is a clean, modern SQLite database with built-in full-text search (FTS5). For a developer, that's night and day: it's an open, well-documented format that any modern library can read, and it's fast. Studio 2026 also includes a wizard for converting existing .sdltb termbases, and handles conversion automatically when opening project packages, so the migration path is taken care of.
+
+**API continuity.** Perhaps most importantly for anyone who builds on the platform: despite the major internal re-architecture, RWS preserved the existing public plug-in APIs. Supervertaler for Trados kept working on Studio 2026 without a forced rewrite – the same terminology provider interfaces, the same integration points. That kind of API stewardship through a big-bang release is not a given in this industry, and it's the reason the AppStore ecosystem can survive a transition like 32-bit to 64-bit intact.
 
 ## Try it yourself
 
