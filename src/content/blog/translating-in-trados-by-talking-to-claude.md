@@ -15,6 +15,10 @@ The [Supervertaler MCP Server](https://docs.supervertaler.com/trados/mcp-server/
 
 MCP (Model Context Protocol) is the open standard that makes this possible: it's the plumbing that lets an AI assistant like Claude talk to other software on your computer. In this case, that other software is Trados Studio.
 
+There are no commands to memorise – you just ask, in plain language. If you're ever unsure what's possible, you can literally ask Claude "What can I do?":
+
+![Asking Claude what you can do with the Supervertaler MCP Server](/blog-images/supervertaler-mcp-what-can-i-do.png)
+
 ## Standing on Trados Studio's shoulders
 
 It's worth pausing on how this is even possible, because it says something about Trados Studio that I think often goes unappreciated: Studio has a genuinely deep extensibility story. It isn't just a CAT tool; it's a platform, with a .NET plug-in framework and a set of public APIs that give third-party developers access to almost everything Studio itself can do.
@@ -28,6 +32,14 @@ Supervertaler for Trados is built on those APIs:
 - And when it's all built, the **RWS AppStore** gives you a distribution channel straight into your users' copies of Studio.
 
 The Supervertaler MCP Server is, in a sense, a thin translation layer on top of all this: a small program that Claude for Desktop talks to, which forwards each request to the plug-in running inside Trados Studio. Every tool Claude can use – "get me the segments", "search the TM", "update this target", "add a comment" – maps down to those same public Trados APIs. The reason I could expose over forty different operations to an AI assistant is simply that Studio's API surface is rich enough to support them. If RWS hadn't invested in that developer platform over the years, none of this would exist.
+
+## An app store before app stores were cool
+
+The [RWS AppStore](https://appstore.rws.com/) deserves its own paragraph in this story. It launched back in 2010 as the SDL OpenExchange, alongside Trados Studio 2009, was later renamed the SDL AppStore, and is now the RWS AppStore – but the idea has been the same throughout: open up the product's APIs, let third-party developers build plug-ins, and give them a central marketplace to distribute through.
+
+Sixteen years on, no other major commercial CAT tool has anything comparable. The only ecosystem I can think of that comes close is [OmegaT](https://omegat.org/), the open-source CAT tool, which has a healthy collection of community-built plugins – the Okapi filters, various machine-translation connectors, and more. But that's a community effort around an open-source project, scattered across wikis and repositories; there's no store, no curation, no one-click install into a commercial product used by hundreds of thousands of translators. What SDL built in 2010 was genuinely ahead of its time.
+
+And here's the thing: the AI world is now busy reinventing exactly this idea. ChatGPT has its plug-ins and GPT store; Claude has its connector directory, skills, and the whole MCP ecosystem. The pattern is identical – a platform opens itself up, third parties extend it, and a marketplace connects the two. The RWS AppStore is what allowed a freelance translator like me to build Supervertaler for Trados and put it in front of Trados users worldwide, and [Supervertaler is distributed through it](https://appstore.rws.com/plugin/432) today. In the near future, I'm hoping to complete the circle: I'm working on getting the Supervertaler MCP Server listed in Claude's public directory of MCP connectors, so that it's available to everyone there too – one plug-in, listed in both generations of app store.
 
 ## The workflow
 
@@ -65,6 +77,10 @@ The effect is hard to describe until you've tried it. Translating stops being ty
 Any decent dictation tool would work, but a fast, accurate one like Wispr Flow matters here, because the whole point is that speaking becomes the primary interface. If dictation is slow or clumsy, you fall back to the keyboard and the spell is broken. When it's fast, you genuinely lean back and direct the work.
 
 ## QA on a whole new level
+
+Here's a small real example: I asked Claude to go through the open project and give me a working glossary I could use while translating. It read the whole job, checked my termbase, and produced this – noting where a rendering was already confirmed in my own termbase:
+
+![Claude building an English–Dutch glossary from the open Trados project](/blog-images/supervertaler-mcp-glossary.png)
 
 Not only does Claude answer questions about the project perfectly, but because it has access to the whole job, it spots things there is no way I would have spotted unless I had spent an inordinate amount of time combing through the entire project: an inconsistent term used in segment 12 and segment 847, a number that doesn't match the source, a confirmed 100% match that is actually wrong in this context.
 
