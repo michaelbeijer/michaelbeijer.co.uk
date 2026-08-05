@@ -12,10 +12,12 @@
  *     One-time payload for page load: the source inventory ("Inside the
  *     Wordbook" table), the available language pairs, and total counts.
  *
- *   GET /search?q=<query>&limit=<n>
+ *   GET /search?q=<query>&limit=<n>&from=<lang>&to=<lang>
  *     FTS5 prefix search over (a, b, def, abbr). Returns matching entries in the
  *     same compact shape the old static snapshot used, so the front-end's
  *     direction-grouping logic is unchanged. `limit` is capped server-side.
+ *     `from`/`to` are the UI's search direction (ISO 639-1, or "any"); they
+ *     don't filter, they only steer ranking — see buildRankSql().
  *
  * D1 schema is produced by the private repo's `wordbook build-d1` command and
  * loaded with `wrangler d1 execute`. See worker/README.md for the runbook.
@@ -33,7 +35,11 @@ const ALLOWED_ORIGINS = new Set([
 	'http://localhost:8788',       // wrangler pages dev
 ]);
 
-const MAX_LIMIT = 100;
+// A common word ("terminal") has hundreds of prefix matches, and its genuine
+// equivalents have to fit inside the result budget alongside them, so the cap
+// is generous. Still a per-query snippet, not the corpus: the front-end shows
+// at most a few dozen headword cards from it.
+const MAX_LIMIT = 300;
 const DEFAULT_LIMIT = 50;
 
 // Also trust this account's own *.workers.dev / *.pages.dev preview subdomains
@@ -101,6 +107,61 @@ function normFold(s, caseSensitive, accentSensitive) {
 // Field-presence filters: column must be non-empty.
 const HAS_COLS = { abbr: 'e.abbr', def: 'e.def', notes: 'e.notes' };
 
+/**
+ * Build the tiered ORDER BY expression that ranks results ahead of bm25.
+ *
+ * FTS matching is prefix-based ("terminal*" also hits "terminalluchtruim"), and
+ * bm25 alone ranks those compounds ABOVE a row whose term IS the query — a
+ * compound matches the token on both sides of the pair, an exact hit only on
+ * one. Left to itself the result budget for a common word is spent entirely on
+ * near-misses: searching "terminal" returned 100 rows without a single one of
+ * `station`, `poot`, `pool`, `kopstation`, `aansluitklem` …
+ *
+ * The old boost tested only `UPPER(e.a) = UPPER(q)`. Column `a` holds Dutch for
+ * essentially the whole corpus, so an English query got no boost at all and the
+ * rows whose *Dutch* happened to equal the query were pinned to the top
+ * instead. Rank in explicit tiers instead:
+ *
+ *   0  exact hit on the side carrying the SEARCH language — direction-aware, so
+ *      EN "terminal" (en→nl) puts "station | terminal" first whichever column
+ *      holds the English
+ *   1  exact hit on either side, or on the abbreviation
+ *   2  the query as a whole WORD inside a multi-word term ("user terminal")
+ *   3  everything else: prefix-only hits, definition / notes matches
+ *
+ * bm25 still orders within a tier. `from` only steers tier 0 — nothing is
+ * filtered out, so a mis-set direction can never hide a result.
+ */
+function buildRankSql(exact, srcLang) {
+	const tiers = [];
+	const binds = [];
+
+	if (srcLang && srcLang !== 'any') {
+		tiers.push(
+			'WHEN (e.la = ? AND UPPER(e.a) = UPPER(?))' +
+			' OR (e.lb = ? AND UPPER(e.b) = UPPER(?)) THEN 0'
+		);
+		binds.push(srcLang, exact, srcLang, exact);
+	}
+
+	tiers.push(
+		"WHEN UPPER(e.a) = UPPER(?) OR UPPER(COALESCE(e.b, '')) = UPPER(?)" +
+		" OR UPPER(COALESCE(e.abbr, '')) = UPPER(?) THEN 1"
+	);
+	binds.push(exact, exact, exact);
+
+	// Whole-word-inside match, padded so the boundaries are real spaces. The
+	// query is user input, so escape LIKE's own metacharacters.
+	const likeWord = '% ' + exact.replace(/[\\%_]/g, (c) => '\\' + c) + ' %';
+	tiers.push(
+		"WHEN ' ' || COALESCE(e.a, '') || ' ' LIKE ? ESCAPE '\\'" +
+		" OR ' ' || COALESCE(e.b, '') || ' ' LIKE ? ESCAPE '\\' THEN 2"
+	);
+	binds.push(likeWord, likeWord);
+
+	return { sql: `CASE ${tiers.join(' ')} ELSE 3 END`, binds };
+}
+
 async function handleSearch(url, env, origin) {
 	const q = url.searchParams.get('q') || '';
 	let limit = parseInt(url.searchParams.get('limit') || '', 10);
@@ -113,6 +174,9 @@ async function handleSearch(url, env, origin) {
 	const accentSens = url.searchParams.get('accent') === '1';
 	const has = (url.searchParams.get('has') || '')
 		.split(',').map((s) => s.trim()).filter((h) => HAS_COLS[h]);
+	// The UI's search direction. Ranking hint only (see buildRankSql) — never a
+	// filter, so an unknown or absent code just drops tier 0.
+	const srcLang = (url.searchParams.get('from') || '').trim().toLowerCase();
 
 	// "Search in" scope. Default (none/invalid) is terms only.
 	let cols = [];
@@ -130,10 +194,13 @@ async function handleSearch(url, env, origin) {
 		? ' AND ' + has.map((h) => `${HAS_COLS[h]} IS NOT NULL AND TRIM(${HAS_COLS[h]}) <> ''`).join(' AND ')
 		: '';
 
-	// Exact whole-string matches on the headword or abbreviation must win over
-	// mere prefix matches: a query of "AFF" should surface the abbreviation
-	// "AFF" ahead of "afferent"/"affidavit"/… which only share the "aff" prefix.
+	// Exact whole-string matches on either headword side or the abbreviation must
+	// win over mere prefix matches: a query of "AFF" should surface the
+	// abbreviation "AFF" ahead of "afferent"/"affidavit"/… which only share the
+	// "aff" prefix, and "terminal" must surface "station | terminal" ahead of
+	// "terminalluchtruim | terminal airspace".
 	const exact = (q || '').trim();
+	const tier = buildRankSql(exact, srcLang);
 
 	// Case/accent/exact need a Unicode-aware refinement the FTS tokenizer can't
 	// do (it folds case + diacritics), so pull a larger candidate set ordered by
@@ -148,10 +215,9 @@ async function handleSearch(url, env, origin) {
 		 FROM entries_fts
 		 JOIN entries e ON e.id = entries_fts.rowid
 		 WHERE entries_fts MATCH ?${whereExtra}
-		 ORDER BY (UPPER(e.a) = UPPER(?) OR UPPER(COALESCE(e.abbr, '')) = UPPER(?)) DESC,
-		          rank
+		 ORDER BY ${tier.sql}, rank
 		 LIMIT ?`
-	).bind(fts, exact, exact, fetchN);
+	).bind(fts, ...tier.binds, fetchN);
 
 	let { results } = await stmt.all();
 	results = results || [];
