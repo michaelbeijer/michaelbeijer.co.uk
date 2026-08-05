@@ -250,24 +250,46 @@ async function handleSearch(url, env, origin) {
 		return o;
 	});
 
-	// Consolidated senses (Phase 2). Each entry may carry a sense-group id (sg);
-	// we return the referenced sense groups once so the front-end can render the
-	// collapsed card (group a headword's result rows by sense). Wrapped in a
-	// try/catch and kept OUT of the main FTS query so an older D1 dump without
-	// the `sg` column / `sense_groups` table degrades gracefully to no senses —
-	// search still works regardless of Worker-vs-dump deploy order.
+	// Consolidated senses (Phase 2). An entry can carry a sense group on EACH
+	// side — "plaat | plate" belongs to a sense of Dutch *plaat* (sga) and to a
+	// sense of English *plate* (sgb) — and which one applies depends on the
+	// direction being searched, so both are returned and the front-end picks.
+	// Wrapped in a try/catch and kept OUT of the main FTS query so an older D1
+	// dump degrades gracefully to no senses; a dump with the pre-sides single
+	// `sg` column is read as the a-side, which is what it was.
 	let senses = [];
 	try {
 		const ids = entries.map((e) => e.id).filter((x) => x != null);
 		if (ids.length) {
 			const ph = ids.map(() => '?').join(',');
-			const { results: sgMap } = await env.DB.prepare(
-				`SELECT id, sg FROM entries WHERE id IN (${ph})`
-			).bind(...ids).all();
-			const id2sg = {};
-			for (const r of sgMap || []) if (r.sg != null) id2sg[r.id] = r.sg;
-			for (const e of entries) if (id2sg[e.id] != null) e.sg = id2sg[e.id];
-			const sgIds = [...new Set(Object.values(id2sg))];
+			let sgMap, sided = true;
+			try {
+				({ results: sgMap } = await env.DB.prepare(
+					`SELECT id, sga, sgb FROM entries WHERE id IN (${ph})`
+				).bind(...ids).all());
+			} catch (_) {
+				// Pre-sides dump: one `sg`, always the a-side.
+				sided = false;
+				({ results: sgMap } = await env.DB.prepare(
+					`SELECT id, sg FROM entries WHERE id IN (${ph})`
+				).bind(...ids).all());
+			}
+			const used = new Set();
+			const bySide = {};
+			for (const r of sgMap || []) {
+				const a = sided ? r.sga : r.sg;
+				const b = sided ? r.sgb : null;
+				if (a != null || b != null) bySide[r.id] = { a, b };
+				if (a != null) used.add(a);
+				if (b != null) used.add(b);
+			}
+			for (const e of entries) {
+				const m = bySide[e.id];
+				if (!m) continue;
+				if (m.a != null) e.sga = m.a;
+				if (m.b != null) e.sgb = m.b;
+			}
+			const sgIds = [...used];
 			if (sgIds.length) {
 				const ph2 = sgIds.map(() => '?').join(',');
 				const { results: sgRows } = await env.DB.prepare(
@@ -276,6 +298,7 @@ async function handleSearch(url, env, origin) {
 				).bind(...sgIds).all();
 				senses = (sgRows || []).map((s) => {
 					const o = { id: s.id, a: s.a, k: s.key, no: s.no, label: s.label };
+					if (s.side) o.side = s.side;
 					if (s.tr) o.tr = s.tr;
 					if (s.dom) o.dom = s.dom; if (s.def) o.def = s.def; if (s.notes) o.notes = s.notes;
 					return o;
