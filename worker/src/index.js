@@ -107,6 +107,25 @@ function normFold(s, caseSensitive, accentSensitive) {
 // Field-presence filters: column must be non-empty.
 const HAS_COLS = { abbr: 'e.abbr', def: 'e.def', notes: 'e.notes' };
 
+// D1 rejects a query with more than 100 bound parameters. The sense lookups
+// below are `... WHERE id IN (?,?,…)` over the result set, so once the
+// front-end's fetch limit passed 100 the query threw and the catch degraded
+// EVERY result to no senses at all — silently, because losing senses looks the
+// same as not having any. Chunk instead, with headroom.
+const ID_CHUNK = 90;
+
+/** Run an `id IN (...)` SELECT over `ids` in chunks, concatenating the rows. */
+async function selectByIds(env, buildSql, ids) {
+	const out = [];
+	for (let i = 0; i < ids.length; i += ID_CHUNK) {
+		const part = ids.slice(i, i + ID_CHUNK);
+		const ph = part.map(() => '?').join(',');
+		const { results } = await env.DB.prepare(buildSql(ph)).bind(...part).all();
+		if (results) out.push(...results);
+	}
+	return out;
+}
+
 /**
  * Build the tiered ORDER BY expression that ranks results ahead of bm25.
  *
@@ -261,18 +280,15 @@ async function handleSearch(url, env, origin) {
 	try {
 		const ids = entries.map((e) => e.id).filter((x) => x != null);
 		if (ids.length) {
-			const ph = ids.map(() => '?').join(',');
 			let sgMap, sided = true;
 			try {
-				({ results: sgMap } = await env.DB.prepare(
-					`SELECT id, sga, sgb FROM entries WHERE id IN (${ph})`
-				).bind(...ids).all());
+				sgMap = await selectByIds(env,
+					(ph) => `SELECT id, sga, sgb FROM entries WHERE id IN (${ph})`, ids);
 			} catch (_) {
 				// Pre-sides dump: one `sg`, always the a-side.
 				sided = false;
-				({ results: sgMap } = await env.DB.prepare(
-					`SELECT id, sg FROM entries WHERE id IN (${ph})`
-				).bind(...ids).all());
+				sgMap = await selectByIds(env,
+					(ph) => `SELECT id, sg FROM entries WHERE id IN (${ph})`, ids);
 			}
 			const used = new Set();
 			const bySide = {};
@@ -291,11 +307,9 @@ async function handleSearch(url, env, origin) {
 			}
 			const sgIds = [...used];
 			if (sgIds.length) {
-				const ph2 = sgIds.map(() => '?').join(',');
-				const { results: sgRows } = await env.DB.prepare(
-					`SELECT *
-					 FROM sense_groups WHERE id IN (${ph2}) ORDER BY "key", no`
-				).bind(...sgIds).all();
+				const sgRows = await selectByIds(env,
+					(ph) => `SELECT * FROM sense_groups WHERE id IN (${ph}) ORDER BY "key", no`,
+					sgIds);
 				senses = (sgRows || []).map((s) => {
 					const o = { id: s.id, a: s.a, k: s.key, no: s.no, label: s.label };
 					if (s.side) o.side = s.side;
