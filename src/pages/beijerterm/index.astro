@@ -2,15 +2,16 @@
 import Page from '../../layouts/Page.astro';
 import { SITE_SEO_TITLE } from '../../consts';
 
-// beijerterm.com is the canonical site. This page is a PREVIEW + link, not a
-// search box: a screenshot of the real tool, a short blurb, and a button.
+// This page is a PREVIEW + link for beijerterm.com, not a search box: a
+// screenshot of the real tool, a short blurb, and a button. It is its own
+// page with its own (self-referencing) canonical — authority flows to
+// beijerterm.com through the ordinary <a> links below, never via canonical.
 const BEIJERTERM = 'https://beijerterm.com';
 ---
 
 <Page
 	title={`Beijerterm | ${SITE_SEO_TITLE}`}
 	description="Beijerterm — my curated multilingual terminology database for technical translators. Search it free at beijerterm.com, or inside Supervertaler."
-	canonical={`${BEIJERTERM}/`}
 >
 	<section class="bt">
 		<h1>Beijerterm</h1>

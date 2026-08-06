@@ -8,15 +8,14 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 interface Props {
 	title?: string;
 	description?: string;
-	canonical?: string;
 }
 
-const { title = SITE_TITLE, description = SITE_DESCRIPTION, canonical } = Astro.props;
+const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} canonical={canonical} />
+		<BaseHead title={title} description={description} />
 		<style>
 			.prose {
 				width: 760px;
