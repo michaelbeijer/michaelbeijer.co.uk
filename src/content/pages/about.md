@@ -8,6 +8,6 @@ description: About Michael Beijer – Dutch patent translator and Dutch technica
 
 I'm Michael Beijer, a Dutch patent translator and translation technology developer based in Hastings, UK. As a Dutch technical translator I also handle manuals, specifications and software documentation. I work with translators, agencies, and direct clients on translation, editing, terminology, and workflow.
 
-With **30 years of experience** and approximately **25 million words** translated, I bring deep expertise to every project. Fully bilingual in Dutch and English—having grown up with a Dutch father and an American mother—I deliver thoroughly researched, fluent translations in both directions.
+With **30 years of experience** and approximately **25 million words** translated, I bring deep expertise to every project. Fully bilingual in Dutch and English – having grown up with a Dutch father and an American mother – I deliver thoroughly researched, fluent translations in both directions.
 
 I'm particularly focused on clear, consistent technical language: controlled terminology, style alignment, and quality checks to reduce downstream rework.
